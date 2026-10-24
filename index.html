@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080610">
+  <title>VoxAura AI — Speech Emotion Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="grain"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="VoxAura home">
+      <span class="brand-mark"><span></span><span></span><span></span></span>
+      <span>vox<span class="brand-light">aura</span><small>EMOTION INTELLIGENCE</small></span>
+    </a>
+    <div class="top-status"><span class="status-dot"></span><span id="modelStatus">{{ 'ML MODEL CONNECTED' if model_ready else 'MODEL NOT CONNECTED' }}</span></div>
+    <button class="icon-button" id="aboutBtn" aria-label="About VoxAura">i</button>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <div class="eyebrow"><span class="eyebrow-line"></span> SPEECH EMOTION RECOGNITION</div>
+      <h1>Hear more than<br>just <span>words.</span></h1>
+      <p class="intro-copy">A little more insight into the feeling behind your voice. Speak naturally and let your voice reveal its emotional patterns.</p>
+      <div class="feature-pills">
+        <span><i class="pill-dot"></i> Voice analysis</span>
+        <span><i class="pill-dot"></i> ML powered</span>
+        <span><i class="pill-dot"></i> Private by design</span>
+      </div>
+      <div class="mini-note"><span class="note-icon">✳</span><span>Your audio is processed for this analysis and is not saved as a recording by this demo.</span></div>
+    </section>
+
+    <section class="assistant-panel" aria-label="Voice assistant">
+      <div class="panel-topline"><span>VOXAURA / LIVE STUDIO</span><span class="live-label"><i></i> <span id="liveState">STANDBY</span></span></div>
+      <div class="orb-stage" id="orbStage">
+        <div class="orb-halo halo-a"></div>
+        <div class="orb-halo halo-b"></div>
+        <div class="orb-orbit orbit-a"></div>
+        <div class="orb-orbit orbit-b"></div>
+        <div class="orb">
+          <div class="orb-shine"></div><div class="orb-core"></div>
+        </div>
+        <div class="orbit-speck speck-one"></div><div class="orbit-speck speck-two"></div>
+      </div>
+      <div class="assistant-copy">
+        <div class="assistant-kicker" id="assistantKicker">YOUR VOICE, IN A NEW LIGHT</div>
+        <h2 id="assistantTitle">Ready when you are.</h2>
+        <p id="assistantText">Press the microphone and say a few words. I’ll listen, then analyze the emotional tone of your speech.</p>
+      </div>
+      <div class="waveform" id="waveform" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="mic-area">
+        <button class="mic-button" id="micBtn" aria-label="Start recording"><span class="mic-glyph">●</span><span class="mic-ring"></span></button>
+        <div class="recording-indicator" id="recordingIndicator" hidden>
+          <span class="rec-dot"></span>
+          <span class="rec-timer" id="recordingTimer">0.0s</span>
+          <span class="rec-guide" id="recordingGuide">(3–5s minimum required)</span>
+        </div>
+        <span class="mic-hint" id="micHint">TAP TO START RECORDING</span>
+      </div>
+      <div class="controls">
+        <button class="secondary-button" id="uploadBtn"><span class="upload-symbol">↑</span> Upload audio</button>
+        <input type="file" id="audioInput" accept="audio/*,.wav,.mp3,.webm,.ogg,.m4a" hidden>
+        <button class="analyze-button" id="analyzeBtn" disabled>Analyze emotion <span>↗</span></button>
+      </div>
+      <div class="file-row" id="fileRow" hidden>
+        <span class="file-icon">♫</span>
+        <div class="file-details">
+          <span id="fileName">audio.wav</span>
+          <span class="file-duration" id="fileDuration"></span>
+        </div>
+        <audio id="audioPreview" controls hidden class="audio-player"></audio>
+        <button id="clearFile" aria-label="Remove audio">×</button>
+      </div>
+      <div class="error-message" id="errorMessage" role="alert" hidden></div>
+      <div class="result-card" id="resultCard" hidden>
+        <div class="result-top"><span class="result-label">ANALYSIS COMPLETE</span><span class="result-spark">✦</span></div>
+        <div class="result-main"><div><span class="result-caption">DETECTED EMOTION</span><h3 id="resultEmotion">Happy</h3></div><div class="confidence"><strong id="resultConfidence">—</strong><span>MODEL SCORE</span></div></div>
+        <div class="probability-list" id="probabilityList"></div>
+        <p class="disclaimer">Model scores are estimates, not definitive judgments of a person's feelings.</p>
+      </div>
+      <div class="panel-footer"><span>DESIGNED FOR HUMAN EXPRESSION</span><span>● AUDIO LAB 01</span></div>
+    </section>
+  </main>
+
+  <footer class="page-footer"><span>VOXAURA AI</span><span>LISTEN WITH CURIOSITY.</span><span>BUILT WITH MACHINE LEARNING</span></footer>
+
+  <div class="modal-backdrop" id="aboutModal" hidden>
+    <div class="modal"><button class="modal-close" id="closeModal" aria-label="Close">×</button><div class="eyebrow">ABOUT THE EXPERIENCE</div><h2>Emotion, explored through sound.</h2><p>VoxAura is a speech emotion recognition demo. It uses audio features and a trained machine-learning model to estimate an emotion from a voice sample.</p><p>It does not know a person's true inner state, and predictions can be wrong. Use it as an educational experiment—not as a diagnostic tool.</p><button class="analyze-button modal-ok" id="modalOk">Got it <span>↗</span></button></div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
